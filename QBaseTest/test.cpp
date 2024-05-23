@@ -1,6 +1,5 @@
 
 #include "pch.h"
-
 #include "../QBase/vanilla_option.cpp"
 
 using namespace std;
