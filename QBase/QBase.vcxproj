@@ -127,7 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="QBase.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="vanilla_option.cpp" />
   </ItemGroup>
   <ItemGroup>

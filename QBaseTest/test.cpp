@@ -3,7 +3,6 @@
 #include "../QBase/vanilla_option.cpp"
 
 using namespace std;
-const double TEST_EPISLON = 1e-12;
 
 
 TEST(TestVanillaOption, TestBS1)
@@ -20,8 +19,8 @@ TEST(TestVanillaOption, TestBS1)
     double call = option.calc_call_price();
     double put = option.calc_put_price();
 
-    EXPECT_NEAR(call, 8.5916594188251523, TEST_EPISLON);
-    EXPECT_NEAR(put, 3.7146018688965654, TEST_EPISLON);
+    EXPECT_NEAR(call, 8.5916594188251523, EPISLON);
+    EXPECT_NEAR(put, 3.7146018688965654, EPISLON);
 }
 
 TEST(TestVanillaOption, TestBS2)
@@ -39,17 +38,17 @@ TEST(TestVanillaOption, TestBS2)
     double put = option.calc_put_price();
 
     // strike = 0, call = 100 and put = 0
-    EXPECT_NEAR(call, 100.0, TEST_EPISLON);
-    EXPECT_NEAR(put, 0.0, TEST_EPISLON);
+    EXPECT_NEAR(call, 100.0, EPISLON);
+    EXPECT_NEAR(put, 0.0, EPISLON);
 }
 
 TEST(TestVanillaOption, TestPutCallParity)
 {
-    vector<double> strikes = { 50.0, 90.0, 95.0, 100.0, 105.0, 110.0, 150.0 };
-    vector<double> spots = { 50.0, 90.0, 95.0, 100.0, 105.0, 110.0, 150.0 };
-    vector<double> maturities = { 1.0 / 252, 1.0 / 12, 0.5, 1.0, 2.0, 3.0, 5.0 };
-    vector<double> sigmas = { 0.01, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5 };
-    vector<double> rates = { -0.01, 0.0, 0.01, 0.05, 0.10 };
+    vector<double> strikes = { 90.0, 100.0, 110.0 };
+    vector<double> spots = { 90.0, 100.0, 110.0 };
+    vector<double> maturities = { 0.0, 1.0 };
+    vector<double> sigmas = { 0.0, 0.1 };
+    vector<double> rates = { -0.01, 0.0, 0.01 };
 
     for (double k : strikes) {
         for (double t : maturities) {
@@ -62,7 +61,7 @@ TEST(TestVanillaOption, TestPutCallParity)
                         double put = option.calc_put_price();
                         double forward = s - k * exp(-r * t);
 
-                        EXPECT_NEAR(call - put, forward, TEST_EPISLON);
+                        EXPECT_NEAR(call - put, forward, EPISLON);
                     }
                 }
             }

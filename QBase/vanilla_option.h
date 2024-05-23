@@ -6,6 +6,7 @@
 #include <cmath>  // This is for 'pow'
 
 double norm_cdf(const double x);
+const double EPISLON = 1e-12;
 
 // Define the Vanilla Option class
 class VanillaOption {

@@ -4,7 +4,13 @@
 #define _USE_MATH_DEFINES   // This allows us to use M_PI below
 #include <corecrt_math_defines.h>
 #include <cmath>  // This is for 'pow'  
+#include <iostream>
+#include <algorithm>
+#include <assert.h>
+
 #include "vanilla_option.h"
+
+using namespace std;
 
 double norm_cdf(const double x)
 {
@@ -81,6 +87,11 @@ double VanillaOption::getsigma() const { return sigma; }
 // the cumulative distribution function of the normal distribution)
 double VanillaOption::calc_call_price() const
 {
+    assert(T >= 0 && sigma >= 0); // time to expiry and sigma must be >= 0.0
+    if (T < EPISLON || sigma < EPISLON)
+    {
+        return max(S - K * exp(-r * T), 0.0);
+    }
     double sigma_sqrt_T = sigma * sqrt(T);
     double d_1 = ( log(S/K) + (r + sigma * sigma * 0.5 ) * T ) / sigma_sqrt_T;
     double d_2 = d_1 - sigma_sqrt_T;
@@ -91,6 +102,11 @@ double VanillaOption::calc_call_price() const
 // the cumulative distribution function of the normal distribution)  
 double VanillaOption::calc_put_price() const
 {
+    assert(T >= 0 && sigma >= 0); // time to expiry and sigma must be >= 0.0
+    if (T < EPISLON || sigma < EPISLON)
+    {
+        return max(K * exp(-r * T) - S, 0.0);
+    }
     double sigma_sqrt_T = sigma * sqrt(T);
     double d_1 = ( log(S/K) + (r + sigma * sigma * 0.5 ) * T ) / sigma_sqrt_T;
     double d_2 = d_1 - sigma_sqrt_T;
