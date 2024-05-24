@@ -1,6 +1,7 @@
 
 #include "pch.h"
 #include "../QBase/vanilla_option.cpp"
+#include "../QBase/payoff.cpp"
 
 using namespace std;
 
@@ -66,5 +67,54 @@ TEST(TestVanillaOption, TestPutCallParity)
                 }
             }
         }
+    }
+}
+
+TEST(TestPayOff, TestCall)
+{
+    double k = 100.0;
+    vector<double> spots = { 80.0, 100.0, 120.0 };
+    vector<double> expected_payoff = { 0.0, 0.0, 20.0 };
+
+    EXPECT_EQ(spots.size(), expected_payoff.size());
+    for (int i = 0; i < spots.size(); i++)
+    {
+        double s = spots[i];
+        PayOffCall c = PayOffCall(k);
+        double payoff = c(s);
+        EXPECT_NEAR(payoff, expected_payoff[i], EPISLON);
+    }
+}
+
+TEST(TestPayOff, TestPut)
+{
+    double k = 100.0;
+    vector<double> spots = { 80.0, 100.0, 120.0 };
+    vector<double> expected_payoff = { 20.0, 0.0, 0.0 };
+
+    EXPECT_EQ(spots.size(), expected_payoff.size());
+    for (int i = 0; i < spots.size(); i++)
+    {
+        double s = spots[i];
+        PayOffPut p = PayOffPut(k);
+        double payoff = p(s);
+        EXPECT_NEAR(payoff, expected_payoff[i], EPISLON);
+    }
+}
+
+TEST(TestPayOff, TestDoubleDigit)
+{
+    double u = 110.0;
+    double d = 90.0;
+    vector<double> spots = { 80.0, 100.0, 120.0 };
+    vector<double> expected_payoff = { 0.0, 1.0, 0.0 };
+
+    EXPECT_EQ(spots.size(), expected_payoff.size());
+    for (int i = 0; i < spots.size(); i++)
+    {
+        double s = spots[i];
+        PayOffDoubleDigital p = PayOffDoubleDigital(u, d);
+        double payoff = p(s);
+        EXPECT_NEAR(payoff, expected_payoff[i], EPISLON);
     }
 }

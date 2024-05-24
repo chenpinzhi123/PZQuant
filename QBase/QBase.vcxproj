@@ -128,9 +128,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="payoff.cpp" />
     <ClCompile Include="vanilla_option.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="payoff.h" />
     <ClInclude Include="vanilla_option.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

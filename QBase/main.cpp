@@ -3,9 +3,11 @@
 
 #include <iostream>
 #include "vanilla_option.h"
+#include "payoff.h"
 
 int main()
 {
+    /*
     double k = 100.0;
     double maturity = 1.0;
     double s = 100.0;
@@ -28,6 +30,17 @@ int main()
     // Output the option prices
     std::cout << "Call Price: " << call << std::endl;
     std::cout << "Put Price: " << put << std::endl;
+    */
+
+    double D = 10.0;  // Lower strike
+    double U = 20.0;  // Upper strike
+
+    PayOffDoubleDigital pay(U, D);  // Create the double digital payoff
+
+    // Output the payoff for various spot prices
+    std::cout << "Spot = 5.0 : " << pay(5.0) << std::endl;
+    std::cout << "Spot = 15.0: " << pay(15.0) << std::endl;
+    std::cout << "Spot = 25.0: " << pay(25.0) << std::endl;
 
     return 0;
 }
