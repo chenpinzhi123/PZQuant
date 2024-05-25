@@ -24,6 +24,12 @@
     <ClCompile Include="payoff.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qmath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="matrix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vanilla_option.h">
@@ -32,5 +38,14 @@
     <ClInclude Include="payoff.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="qmath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

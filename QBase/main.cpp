@@ -2,6 +2,8 @@
 //
 
 #include <iostream>
+#include "matrix.h"
+#include "qmath.h"
 #include "vanilla_option.h"
 #include "payoff.h"
 
@@ -30,7 +32,6 @@ int main()
     // Output the option prices
     std::cout << "Call Price: " << call << std::endl;
     std::cout << "Put Price: " << put << std::endl;
-    */
 
     double D = 10.0;  // Lower strike
     double U = 20.0;  // Upper strike
@@ -41,6 +42,29 @@ int main()
     std::cout << "Spot = 5.0 : " << pay(5.0) << std::endl;
     std::cout << "Spot = 15.0: " << pay(15.0) << std::endl;
     std::cout << "Spot = 25.0: " << pay(25.0) << std::endl;
+
+    SimpleMatrix<double> sm(4, 4, 0.0);
+
+    // Output values of the SimpleMatrix
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            std::cout << sm.value(i, j) << "\t";
+        }
+        std::cout << std::endl;
+    }
+    */
+
+    QSMatrix<double> mat1(10, 10, 1.0);
+    QSMatrix<double> mat2(10, 10, 2.0);
+    QSMatrix<double> mat3 = mat1 + mat2;
+
+    for (int i = 0; i < mat3.get_rows(); i++) {
+        for (int j = 0; j < mat3.get_cols(); j++) {
+            std::cout << mat3(i, j) << ", ";
+        }
+        std::cout << std::endl;
+    }
+
 
     return 0;
 }
