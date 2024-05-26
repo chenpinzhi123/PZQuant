@@ -127,5 +127,4 @@ double VanillaOption::calc_put_price_monte_carlo(const int num_sims) const
     return (payoff_sum / static_cast<double>(num_sims)) * exp(-r * T);
 }
 
-
 #endif

@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="black_scholes.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrix.cpp" />
     <ClCompile Include="payoff.cpp" />
@@ -134,6 +135,7 @@
     <ClCompile Include="vanilla_option.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="black_scholes.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="payoff.h" />
     <ClInclude Include="qmath.h" />

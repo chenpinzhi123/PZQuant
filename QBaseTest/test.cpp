@@ -4,6 +4,7 @@
 #include <Eigen/LU>
 #include "../QBase/matrix.h"
 #include "../QBase/qmath.cpp"
+#include "../QBase/black_scholes.cpp"
 #include "../QBase/vanilla_option.cpp"
 #include "../QBase/payoff.cpp"
 
@@ -419,7 +420,6 @@ TEST(TestNumericalLinearAlgebra, TestEigenCholeskyDecomposition)
     EXPECT_TRUE((p - l * lt).norm() < EPISLON);
 }
 
-
 TEST(TestNumericalLinearAlgebra, TestEigenQRDecomposition)
 {
     // Declare a 3x3 matrix with defined entries
@@ -494,7 +494,6 @@ TEST(TestNumericalLinearAlgebra, TestEigenQRDecompositionForLeastSquares)
     EXPECT_TRUE((b - b2).norm() < EPISLON);
 }
 
-
 TEST(TestVanillaOption, TestBS1)
 {
     double k = 100.0;
@@ -559,7 +558,6 @@ TEST(TestVanillaOption, TestPutCallParity)
     }
 }
 
-
 TEST(TestVanillaOption, TestSimpleMonteCarlo)
 {
     double k = 100.0;
@@ -596,4 +594,267 @@ TEST(TestVanillaOption, TestSimpleMonteCarlo)
     EXPECT_NEAR(call_mc2, 8.6567854960174575, EPISLON);
     EXPECT_NEAR(put_mc2, 3.7356994889424135, EPISLON);
 
+}
+
+TEST(TestBlackScholes, TestAnalyticalGreeks1)
+{
+    // First we create the parameter list
+    double K = 100.0;
+    double T = 1.0;
+    double S = 100.0;
+    double v = 0.15;
+    double r = 0.05;
+
+    // Then we calculate the call/put values and the Greeks
+    double call = black_scholes_price(true, S, K, r, v, T);
+    double put = black_scholes_price(false, S, K, r, v, T);
+
+    double call_delta_v = black_scholes_delta(true, S, K, r, v, T);
+    double call_gamma_v = black_scholes_gamma(true, S, K, r, v, T);
+    double call_vega_v = black_scholes_vega(true, S, K, r, v, T);
+    double call_theta_v = black_scholes_theta(true, S, K, r, v, T);
+    double call_rho_v = black_scholes_rho(true, S, K, r, v, T);
+
+    double put_delta_v = black_scholes_delta(false, S, K, r, v, T);
+    double put_gamma_v = black_scholes_gamma(false, S, K, r, v, T);
+    double put_vega_v = black_scholes_vega(false, S, K, r, v, T);
+    double put_theta_v = black_scholes_theta(false, S, K, r, v, T);
+    double put_rho_v = black_scholes_rho(false, S, K, r, v, T);
+
+    // Finally we output the parameters and prices
+
+    EXPECT_NEAR(call, 8.5916594188251523, EPISLON);
+    EXPECT_NEAR(call_delta_v, 0.6584854738879985, EPISLON);
+    EXPECT_NEAR(call_gamma_v, 0.024468791497288662, EPISLON);
+    EXPECT_NEAR(call_vega_v, 36.703187245932995, EPISLON);
+    EXPECT_NEAR(call_theta_v, -5.6155834419437092, EPISLON);
+    EXPECT_NEAR(call_rho_v, 57.256887969974692, EPISLON);
+
+    EXPECT_NEAR(put, 3.7146018688965654, EPISLON);
+    EXPECT_NEAR(put_delta_v, -0.3415145261120015, EPISLON);
+    EXPECT_NEAR(put_gamma_v, 0.024468791497288662, EPISLON);
+    EXPECT_NEAR(put_vega_v, 36.703187245932995, EPISLON);
+    EXPECT_NEAR(put_theta_v, -0.85943631944013865, EPISLON);
+    EXPECT_NEAR(put_rho_v, -37.866054480096714, EPISLON);
+}
+
+TEST(TestBlackScholes, TestAnalyticalGreeks2)
+{
+    // First we create the parameter list
+    double K = 100.0;
+    double T = 0.01;
+    double S = 150.0;
+    double v = 0.25;
+    double r = 0.05;
+
+    // Then we calculate the call/put values and the Greeks
+    double call = black_scholes_price(true, S, K, r, v, T);
+    double put = black_scholes_price(false, S, K, r, v, T);
+
+    double call_delta_v = black_scholes_delta(true, S, K, r, v, T);
+    double call_gamma_v = black_scholes_gamma(true, S, K, r, v, T);
+    double call_vega_v = black_scholes_vega(true, S, K, r, v, T);
+    double call_theta_v = black_scholes_theta(true, S, K, r, v, T);
+    double call_rho_v = black_scholes_rho(true, S, K, r, v, T);
+
+    double put_delta_v = black_scholes_delta(false, S, K, r, v, T);
+    double put_gamma_v = black_scholes_gamma(false, S, K, r, v, T);
+    double put_vega_v = black_scholes_vega(false, S, K, r, v, T);
+    double put_theta_v = black_scholes_theta(false, S, K, r, v, T);
+    double put_rho_v = black_scholes_rho(false, S, K, r, v, T);
+
+    // Finally we output the parameters and prices
+
+    EXPECT_NEAR(call, 50.04998750208307, EPISLON);
+    EXPECT_NEAR(call_delta_v, 1.0, EPISLON);
+    EXPECT_NEAR(call_gamma_v, 0.0, EPISLON);
+    EXPECT_NEAR(call_vega_v, 0.0, EPISLON);
+    EXPECT_NEAR(call_theta_v, -4.997500624895847, EPISLON);
+    EXPECT_NEAR(call_rho_v, 0.9995001249791693, EPISLON);
+
+    EXPECT_NEAR(put, 0.0, EPISLON);
+    EXPECT_NEAR(put_delta_v, 0.0, EPISLON);
+    EXPECT_NEAR(put_gamma_v, 0.0, EPISLON);
+    EXPECT_NEAR(put_vega_v, 0.0, EPISLON);
+    EXPECT_NEAR(put_theta_v, 0.0, EPISLON);
+    EXPECT_NEAR(put_rho_v, 0.0, EPISLON);
+
+}
+
+TEST(TestBlackScholes, TestMonteCarloSimple)
+{
+    // First we create the parameter list
+    double K = 100.0;
+    double T = 1.0;
+    double S = 100.0;
+    double v = 0.15;
+    double r = 0.05;
+
+    srand(1);
+
+    // Analytical results
+    double call = black_scholes_price(true, S, K, r, v, T);
+    double put = black_scholes_price(false, S, K, r, v, T);
+
+    // Then we calculate the call/put values via Monte Carlo
+    double call_mc1 = monte_carlo_bs_price_simple(1000, true, S, K, r, v, T);
+    double put_mc1 = monte_carlo_bs_price_simple(1000, false, S, K, r, v, T);
+
+    // Then we calculate the call/put values via Monte Carlo (higher num paths)
+    double call_mc2 = monte_carlo_bs_price_simple(100000, true, S, K, r, v, T);
+    double put_mc2 = monte_carlo_bs_price_simple(100000, false, S, K, r, v, T);
+
+    EXPECT_NEAR(call_mc1,   8.679039030238332, EPISLON);
+    EXPECT_NEAR(call_mc2,   8.656785496017458, EPISLON);
+    EXPECT_NEAR(call,       8.591659418825152, EPISLON);
+
+    EXPECT_NEAR(put_mc1,    3.603289623930281, EPISLON);
+    EXPECT_NEAR(put_mc2,    3.735699488942414, EPISLON);
+    EXPECT_NEAR(put,        3.714601868896565, EPISLON);
+}
+
+TEST(TestBlackScholes, TestFDMGreeks1)
+{
+    // First we create the parameter list
+    double K = 100.0;
+    double T = 1.0;
+    double S = 100.0;
+    double v = 0.15;
+    double r = 0.05;
+
+    // Then we calculate the call/put values and the Greeks
+    double call = black_scholes_price(true, S, K, r, v, T);
+    double put = black_scholes_price(false, S, K, r, v, T);
+
+    double call_delta_v = black_scholes_delta(true, S, K, r, v, T);
+    double call_gamma_v = black_scholes_gamma(true, S, K, r, v, T);
+    double call_vega_v = black_scholes_vega(true, S, K, r, v, T);
+    double call_theta_v = black_scholes_theta(true, S, K, r, v, T);
+    double call_rho_v = black_scholes_rho(true, S, K, r, v, T);
+
+    double put_delta_v = black_scholes_delta(false, S, K, r, v, T);
+    double put_gamma_v = black_scholes_gamma(false, S, K, r, v, T);
+    double put_vega_v = black_scholes_vega(false, S, K, r, v, T);
+    double put_theta_v = black_scholes_theta(false, S, K, r, v, T);
+    double put_rho_v = black_scholes_rho(false, S, K, r, v, T);
+
+    double call_delta_v_fdm = black_scholes_delta_fdm(true, S, K, r, v, T, 0.01);
+    double call_gamma_v_fdm = black_scholes_gamma_fdm(true, S, K, r, v, T, 0.01);
+    double call_vega_v_fdm = black_scholes_vega_fdm(true, S, K, r, v, T, 0.0001);
+    double call_theta_v_fdm = black_scholes_theta_fdm(true, S, K, r, v, T, 0.01);
+    double call_rho_v_fdm = black_scholes_rho_fdm(true, S, K, r, v, T, 0.0001);
+
+    double put_delta_v_fdm = black_scholes_delta_fdm(false, S, K, r, v, T, 0.01);
+    double put_gamma_v_fdm = black_scholes_gamma_fdm(false, S, K, r, v, T, 0.01);
+    double put_vega_v_fdm = black_scholes_vega_fdm(false, S, K, r, v, T, 0.0001);
+    double put_theta_v_fdm = black_scholes_theta_fdm(false, S, K, r, v, T, 0.01);
+    double put_rho_v_fdm = black_scholes_rho_fdm(false, S, K, r, v, T, 0.0001);
+
+    // Finally we output the parameters and prices
+
+    EXPECT_NEAR(call_delta_v,       0.6584854738879985, EPISLON);
+    EXPECT_NEAR(call_delta_v_fdm,   0.6586131187660271, EPISLON);
+
+    EXPECT_NEAR(call_gamma_v,       0.024468791497288662, EPISLON);
+    EXPECT_NEAR(call_gamma_v_fdm,   0.02446709451930928, EPISLON);
+
+    EXPECT_NEAR(call_vega_v,        36.703187245932995, EPISLON);
+    EXPECT_NEAR(call_vega_v_fdm,    36.70430381909284, EPISLON);
+
+    EXPECT_NEAR(call_theta_v,       -5.6155834419437092, EPISLON);
+    EXPECT_NEAR(call_theta_v_fdm,   -5.623193327079434, EPISLON);
+
+    EXPECT_NEAR(call_rho_v,         57.256887969974692, EPISLON);
+    EXPECT_NEAR(call_rho_v_fdm,     57.26678968223098, EPISLON);
+
+    EXPECT_NEAR(put_delta_v,        -0.3415145261120015, EPISLON);
+    EXPECT_NEAR(put_delta_v_fdm,    -0.341386881235195, EPISLON);
+
+    EXPECT_NEAR(put_gamma_v,        0.024468791497288662, EPISLON);
+    EXPECT_NEAR(put_gamma_v_fdm,    0.02446709444825501, EPISLON);
+
+    EXPECT_NEAR(put_vega_v,         36.703187245932995, EPISLON);
+    EXPECT_NEAR(put_vega_v_fdm,     36.70430381902179, EPISLON);
+
+    EXPECT_NEAR(put_theta_v,        -0.85943631944013865, EPISLON);
+    EXPECT_NEAR(put_theta_v_fdm,    -0.8658569695995766, EPISLON);
+
+    EXPECT_NEAR(put_rho_v,          -37.866054480096714, EPISLON);
+    EXPECT_NEAR(put_rho_v_fdm,      -37.85139677937366, EPISLON);
+}
+
+TEST(TestBlackScholes, TestMonteCarloSimpleGreeks1)
+{
+    // First we create the parameter list
+    double K = 100.0;
+    double T = 1.0;
+    double S = 100.0;
+    double v = 0.15;
+    double r = 0.05;
+
+    // Then we calculate the call/put values and the Greeks
+    double call = black_scholes_price(true, S, K, r, v, T);
+    double put = black_scholes_price(false, S, K, r, v, T);
+
+    double call_delta_v = black_scholes_delta(true, S, K, r, v, T);
+    double call_gamma_v = black_scholes_gamma(true, S, K, r, v, T);
+    double call_vega_v = black_scholes_vega(true, S, K, r, v, T);
+    double call_theta_v = black_scholes_theta(true, S, K, r, v, T);
+    double call_rho_v = black_scholes_rho(true, S, K, r, v, T);
+
+    double put_delta_v = black_scholes_delta(false, S, K, r, v, T);
+    double put_gamma_v = black_scholes_gamma(false, S, K, r, v, T);
+    double put_vega_v = black_scholes_vega(false, S, K, r, v, T);
+    double put_theta_v = black_scholes_theta(false, S, K, r, v, T);
+    double put_rho_v = black_scholes_rho(false, S, K, r, v, T);
+
+    double call_delta_v_mc = black_scholes_delta_mc(10000, true, S, K, r, v, T, 0.01);
+    double call_gamma_v_mc = black_scholes_gamma_mc(10000, true, S, K, r, v, T, 0.01);
+    double call_vega_v_mc = black_scholes_vega_mc(10000, true, S, K, r, v, T, 0.0001);
+    double call_theta_v_mc = black_scholes_theta_mc(10000, true, S, K, r, v, T, 0.01);
+    double call_rho_v_mc = black_scholes_rho_mc(10000, true, S, K, r, v, T, 0.0001);
+
+    double put_delta_v_mc = black_scholes_delta_mc(10000, false, S, K, r, v, T, 0.01);
+    double put_gamma_v_mc = black_scholes_gamma_mc(10000, false, S, K, r, v, T, 0.01);
+    double put_vega_v_mc = black_scholes_vega_mc(10000, false, S, K, r, v, T, 0.0001);
+    double put_theta_v_mc = black_scholes_theta_mc(10000, false, S, K, r, v, T, 0.01);
+    double put_rho_v_mc = black_scholes_rho_mc(10000, false, S, K, r, v, T, 0.0001);
+
+    // Finally we output the parameters and prices
+    EXPECT_NEAR(call_delta_v,       0.6584854738879985, EPISLON);
+    EXPECT_NEAR(call_delta_v_mc,    0.64984640484446743, EPISLON);
+
+    EXPECT_NEAR(call_gamma_v,       0.024468791497288662, EPISLON);
+    EXPECT_NEAR(call_gamma_v_mc,    0.014160692387577001, EPISLON);
+
+    EXPECT_NEAR(call_vega_v,        36.703187245932995, EPISLON);
+    EXPECT_NEAR(call_vega_v_mc,     38.152785372780329, EPISLON);
+
+    EXPECT_NEAR(call_theta_v,       -5.6155834419437092, EPISLON);
+    EXPECT_NEAR(call_theta_v_mc,    -5.7214289563143339, EPISLON);
+
+    EXPECT_NEAR(call_rho_v,         57.256887969974692, EPISLON);
+    EXPECT_NEAR(call_rho_v_mc,      57.355418171169958, EPISLON);
+
+    EXPECT_NEAR(put_delta_v,        -0.3415145261120015, EPISLON);
+    EXPECT_NEAR(put_delta_v_mc,     -0.33576169530262767, EPISLON);
+
+    EXPECT_NEAR(put_gamma_v,        0.024468791497288662, EPISLON);
+    EXPECT_NEAR(put_gamma_v_mc,     0.053891985132281661, EPISLON);
+
+    EXPECT_NEAR(put_vega_v,         36.703187245932995, EPISLON);
+    EXPECT_NEAR(put_vega_v_mc,      37.024470389970254, EPISLON);
+
+    EXPECT_NEAR(put_theta_v,        -0.85943631944013865, EPISLON);
+    EXPECT_NEAR(put_theta_v_mc,     -0.86951295979260657, EPISLON);
+
+    EXPECT_NEAR(put_rho_v,          -37.866054480096714, EPISLON);
+    EXPECT_NEAR(put_rho_v_mc,       -37.248904340199118, EPISLON);
+
+    // Check the convergence
+    EXPECT_NEAR(call_delta_v, call_delta_v_mc, 0.01);
+    EXPECT_NEAR(call_gamma_v, call_gamma_v_mc, 0.1);
+    EXPECT_NEAR(call_vega_v, call_vega_v_mc, 5);
+    EXPECT_NEAR(call_theta_v, call_theta_v_mc, 0.5);
+    EXPECT_NEAR(call_rho_v, call_rho_v_mc, 1);
 }
