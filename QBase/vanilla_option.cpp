@@ -96,4 +96,36 @@ double VanillaOption::calc_put_price() const
     return K * exp(-r*T) * norm_cdf(-d_2) - S * norm_cdf(-d_1);
 }
 
+// Option MC methods
+double VanillaOption::calc_call_price_monte_carlo(const int num_sims) const
+{
+    double S_adjust = S * exp(T * (r - 0.5 * sigma * sigma));
+    double S_cur = 0.0;
+    double payoff_sum = 0.0;
+
+    for (int i = 0; i < num_sims; i++) {
+        double gauss_bm = gaussian_box_muller();
+        S_cur = S_adjust * exp(sqrt(sigma * sigma * T) * gauss_bm);
+        payoff_sum += max(S_cur - K, 0.0);
+    }
+
+    return (payoff_sum / static_cast<double>(num_sims)) * exp(-r * T);
+}
+
+double VanillaOption::calc_put_price_monte_carlo(const int num_sims) const
+{
+    double S_adjust = S * exp(T * (r - 0.5 * sigma * sigma));
+    double S_cur = 0.0;
+    double payoff_sum = 0.0;
+
+    for (int i = 0; i < num_sims; i++) {
+        double gauss_bm = gaussian_box_muller();
+        S_cur = S_adjust * exp(sqrt(sigma * sigma * T) * gauss_bm);
+        payoff_sum += max(K - S_cur, 0.0);
+    }
+
+    return (payoff_sum / static_cast<double>(num_sims)) * exp(-r * T);
+}
+
+
 #endif

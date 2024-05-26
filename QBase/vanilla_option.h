@@ -34,6 +34,10 @@ public:
     // Option price calculation methods
     double calc_call_price() const;
     double calc_put_price() const;
+
+    // Option MC methods (Simple MC)
+    double calc_call_price_monte_carlo(const int num_sims) const;
+    double calc_put_price_monte_carlo(const int num_sims) const;
 };
 
 #endif
