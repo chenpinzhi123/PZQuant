@@ -205,7 +205,7 @@ double black_scholes_vega_mc(const int num_sims, const bool is_call, const doubl
     double price_Sm = 0.0;
 
     // Call the Monte Carlo pricer for each of the three stock paths
-    // (We only need two for the Delta)
+    // (We only need two for the Vega)
     monte_carlo_price_simple_3path(num_sims, is_call, S, K, r, v, T, 0, 0, delta_v, 0, price_Sp, price_S, price_Sm);
     return (price_Sp - price_S) / delta_v;
 }
@@ -216,7 +216,7 @@ double black_scholes_theta_mc(const int num_sims, const bool is_call, const doub
     double price_Sm = 0.0;
 
     // Call the Monte Carlo pricer for each of the three stock paths
-    // (We only need two for the Delta)
+    // (We only need two for the Theta)
     monte_carlo_price_simple_3path(num_sims, is_call, S, K, r, v, T, 0, 0, 0, delta_t, price_Sp, price_S, price_Sm);
     return (price_Sm - price_S) / delta_t;
 }
@@ -227,7 +227,7 @@ double black_scholes_rho_mc(const int num_sims, const bool is_call, const double
     double price_Sm = 0.0;
 
     // Call the Monte Carlo pricer for each of the three stock paths
-    // (We only need two for the Delta)
+    // (We only need two for the Rho)
     monte_carlo_price_simple_3path(num_sims, is_call, S, K, r, v, T, 0, delta_r, 0, 0, price_Sp, price_S, price_Sm);
     return (price_Sp - price_S) / delta_r;
 }

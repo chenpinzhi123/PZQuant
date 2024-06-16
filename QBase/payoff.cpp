@@ -1,6 +1,8 @@
 #ifndef __PAY_OFF_CPP
 #define __PAY_OFF_CPP
 
+#include <numeric>  // Necessary for std::accumulate
+#include <cmath>  // For log/exp functions
 #include "payoff.h"
 
 // ==========
@@ -49,6 +51,43 @@ double PayOffDoubleDigital::operator() (const double S) const {
 	else {
 		return 0.0;
 	}
+}
+
+// =====================
+// AsianOptionArithmetic
+// =====================
+
+PayOffAsianOption::PayOffAsianOption(PayOff* _pay_off) : pay_off(_pay_off) {}
+
+// =====================  
+// AsianOptionArithmetic
+// =====================  
+
+PayOffAsianOptionArithmetic::PayOffAsianOptionArithmetic(PayOff* _pay_off) : PayOffAsianOption(_pay_off) {}
+
+// Arithmetic mean pay-off price
+double PayOffAsianOptionArithmetic::pay_off_price(const std::vector<double>& spot_prices) const {
+	unsigned num_times = spot_prices.size();
+	double sum = std::accumulate(spot_prices.begin(), spot_prices.end(), 0);
+	double arith_mean = sum / static_cast<double>(num_times);
+	return (*pay_off)(arith_mean);
+}
+
+// ====================
+// AsianOptionGeometric
+// ====================
+
+PayOffAsianOptionGeometric::PayOffAsianOptionGeometric(PayOff* _pay_off) : PayOffAsianOption(_pay_off) {}
+
+// Geometric mean pay-off price
+double PayOffAsianOptionGeometric::pay_off_price(const std::vector<double>& spot_prices) const {
+	unsigned num_times = spot_prices.size();
+	double log_sum = 0.0;
+	for (int i = 0; i < spot_prices.size(); i++) {
+		log_sum += log(spot_prices[i]);
+	}
+	double geom_mean = exp(log_sum / static_cast<double>(num_times));
+	return (*pay_off)(geom_mean);
 }
 
 #endif

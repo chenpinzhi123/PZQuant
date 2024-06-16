@@ -33,6 +33,9 @@
     <ClCompile Include="black_scholes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="asian.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vanilla_option.h">
@@ -48,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="black_scholes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="asian.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

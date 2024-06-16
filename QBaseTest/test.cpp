@@ -7,6 +7,7 @@
 #include "../QBase/black_scholes.cpp"
 #include "../QBase/vanilla_option.cpp"
 #include "../QBase/payoff.cpp"
+#include "../QBase/asian.cpp"
 
 using namespace std;
 
@@ -857,4 +858,44 @@ TEST(TestBlackScholes, TestMonteCarloSimpleGreeks1)
     EXPECT_NEAR(call_vega_v, call_vega_v_mc, 5);
     EXPECT_NEAR(call_theta_v, call_theta_v_mc, 0.5);
     EXPECT_NEAR(call_rho_v, call_rho_v_mc, 1);
+}
+
+
+TEST(TestAsianOption, TestAsianMonteCarloSimple)
+{
+    // First we create the parameter list
+    double K = 100.0;
+    double T = 1.0;
+    double S = 100.0;
+    double v = 0.15;
+    double r = 0.05;
+
+    // Then we calculate the call/put values and the Greeks
+    double call = black_scholes_price(true, S, K, r, v, T);
+    double put = black_scholes_price(false, S, K, r, v, T);
+
+    int N = 1000;
+
+    // TODO: path could be reused...
+    double asian_arithmatic_call = monte_carlo_asian_price_simple(
+        N, true, true, S, K, r, v, T);
+    double asian_arithmatic_put = monte_carlo_asian_price_simple(
+        N, false, true, S, K, r, v, T);
+    double asian_geometric_call = monte_carlo_asian_price_simple(
+        N, true, false, S, K, r, v, T);
+    double asian_geometric_put = monte_carlo_asian_price_simple(
+        N, false, false, S, K, r, v, T);
+
+    EXPECT_NEAR(asian_arithmatic_call, 4.5097254327101108373, EPISLON);
+    EXPECT_NEAR(asian_geometric_call, 4.3603341462349094471, EPISLON);
+
+    EXPECT_NEAR(asian_arithmatic_put, 2.6011216416264151263, EPISLON);
+    EXPECT_NEAR(asian_geometric_put, 2.3823752929821884194, EPISLON);
+
+    // assert that asian option price < vanilla european option price
+    EXPECT_TRUE(asian_arithmatic_call < call);
+    EXPECT_TRUE(asian_arithmatic_put < put);
+    EXPECT_TRUE(asian_geometric_call < call);
+    EXPECT_TRUE(asian_geometric_put < put);
+
 }
